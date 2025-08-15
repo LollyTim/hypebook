@@ -8,6 +8,7 @@ import { Search, Menu } from "lucide-react"
 import Link from "next/link"
 import { useSidebar } from "@/components/docs-sidebar"
 import Image from "next/image"
+import logo from "@/app/assets/image/hypebookLogo.png"
 
 export function DocsHeader() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -27,7 +28,7 @@ export function DocsHeader() {
           </Button>
           <Link href="/" className="flex items-center gap-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center">
-              <Image src="/hypebook-logo.png" alt="HypeBook" width={32} height={32} className="w-7 h-7 sm:w-8 sm:h-8" />
+              <Image src={logo} alt="HypeBook" width={32} height={32} className="w-7 h-7 sm:w-8 sm:h-8" />
             </div>
             <span className="font-serif font-bold text-lg sm:text-xl">HypeBook</span>
           </Link>
@@ -48,7 +49,7 @@ export function DocsHeader() {
 
         <div className="flex items-center gap-1 sm:gap-2">
           <Button variant="ghost" size="sm" asChild className="text-xs sm:text-sm">
-            <Link href="https://github.com/hypebook-docs" target="_blank">
+            <Link href="https://github.com/lollytim/hypebook" target="_blank">
               GitHub
             </Link>
           </Button>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
+import logo from "@/app/assets/image/hypebookLogo.png"
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -53,7 +54,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group flex-shrink-0">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Image src="/hypebook-logo.png" alt="HypeBook Logo" width={32} height={32} className="w-8 h-8" />
+              <Image src={logo} alt="HypeBook Logo" width={32} height={32} className="w-8 h-8" />
             </div>
             <span className="text-lg font-medium text-white hidden sm:block">HypeBook</span>
           </Link>
