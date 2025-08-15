@@ -47,7 +47,7 @@ export function Footer() {
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-serif font-bold text-gradient">HyperBook</span>
+              <span className="text-2xl font-serif font-bold text-gradient">HypeBook</span>
             </div>
 
             <p className="text-muted-foreground leading-relaxed max-w-md">
@@ -107,7 +107,7 @@ export function Footer() {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <p className="text-muted-foreground text-sm">© 2024 HyperBook. Open source under MIT License.</p>
+          <p className="text-muted-foreground text-sm">© 2024 HypeBook. Open source under MIT License.</p>
           <div className="flex gap-6 text-sm">
             <motion.a
               href="#"

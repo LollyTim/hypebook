@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Virtual Machine - HyperBook",
+  title: "Virtual Machine - HypeBook",
   description: "Understanding HyperEVM virtual machine and execution environment",
 }
 

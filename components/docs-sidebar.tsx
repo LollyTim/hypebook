@@ -19,57 +19,26 @@ const navigationItems = [
     ],
   },
   {
-    title: "HyperEVM Overview",
+    title: "HyperEVM",
     icon: Book,
     items: [
       { title: "Architecture", href: "/docs/hyperevm/architecture" },
-      { title: "Consensus", href: "/docs/hyperevm/consensus" },
-      { title: "Virtual Machine", href: "/docs/hyperevm/vm" },
     ],
   },
   {
-    title: "CoreWriter",
-    icon: Code,
-    items: [
-      { title: "Overview", href: "/docs/corewriter" },
-      { title: "API Reference", href: "/docs/corewriter/api" },
-      { title: "Examples", href: "/docs/corewriter/examples" },
-    ],
-  },
-  {
-    title: "Precompiles",
-    icon: Settings,
-    items: [
-      { title: "Built-in Functions", href: "/docs/precompiles" },
-      { title: "Custom Precompiles", href: "/docs/precompiles/custom" },
-      { title: "Gas Optimization", href: "/docs/precompiles/gas" },
-    ],
-  },
-  {
-    title: "Testnet Setup",
+    title: "Testnet",
     icon: Zap,
     items: [
-      { title: "Network Configuration", href: "/docs/testnet" },
+      { title: "Network Setup", href: "/docs/testnet" },
       { title: "Faucet", href: "/docs/testnet/faucet" },
-      { title: "Validators", href: "/docs/testnet/validators" },
     ],
   },
   {
-    title: "Tooling & SDKs",
-    icon: Wrench,
-    items: [
-      { title: "JavaScript SDK", href: "/docs/sdk/javascript" },
-      { title: "Python SDK", href: "/docs/sdk/python" },
-      { title: "CLI Tools", href: "/docs/sdk/cli" },
-    ],
-  },
-  {
-    title: "RPC Providers",
+    title: "RPC & Network",
     icon: Globe,
     items: [
-      { title: "Public Endpoints", href: "/docs/rpc" },
+      { title: "RPC Endpoints", href: "/docs/rpc" },
       { title: "Rate Limits", href: "/docs/rpc/limits" },
-      { title: "WebSocket", href: "/docs/rpc/websocket" },
     ],
   },
   {
@@ -122,7 +91,7 @@ export function DocsSidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:fixed lg:inset-y-0 lg:top-16 lg:flex lg:w-80 lg:flex-col">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border/40 bg-background/95 backdrop-blur px-6 py-6">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border/40 bg-background/95 backdrop-blur px-4 sm:px-6 py-6">
           <nav className="flex flex-1 flex-col">
             <div className="space-y-2">
               {navigationItems.map((section) => {
@@ -163,11 +132,10 @@ export function DocsSidebar() {
                                 <motion.div key={item.href} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                                   <Link
                                     href={item.href}
-                                    className={`block py-2 px-3 rounded-md text-sm font-sans transition-all duration-200 ${
-                                      isActive
-                                        ? "bg-primary/20 text-white font-medium border-l-2 border-primary"
-                                        : "text-muted-foreground hover:text-white hover:bg-primary/10"
-                                    }`}
+                                    className={`block py-2 px-3 rounded-md text-sm font-sans transition-all duration-200 ${isActive
+                                      ? "bg-primary/20 text-white font-medium border-l-2 border-primary"
+                                      : "text-muted-foreground hover:text-white hover:bg-primary/10"
+                                      }`}
                                   >
                                     {item.title}
                                   </Link>
@@ -198,13 +166,13 @@ export function DocsSidebar() {
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
-              className="fixed inset-y-0 left-0 z-50 w-80 overflow-y-auto bg-background border-r border-border/40 lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] overflow-y-auto bg-background border-r border-border/40 lg:hidden"
               initial={{ x: -320 }}
               animate={{ x: 0 }}
               exit={{ x: -320 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <div className="flex grow flex-col gap-y-5 px-6 py-6 pt-20">
+              <div className="flex grow flex-col gap-y-5 px-4 sm:px-6 py-6 pt-20">
                 <nav className="flex flex-1 flex-col">
                   <div className="space-y-2">
                     {navigationItems.map((section) => {
@@ -245,11 +213,10 @@ export function DocsSidebar() {
                                       <motion.div key={item.href} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                                         <Link
                                           href={item.href}
-                                          className={`block py-2 px-3 rounded-md text-sm font-sans transition-all duration-200 ${
-                                            isActive
-                                              ? "bg-primary/20 text-white font-medium border-l-2 border-primary"
-                                              : "text-muted-foreground hover:text-white hover:bg-primary/10"
-                                          }`}
+                                          className={`block py-2 px-3 rounded-md text-sm font-sans transition-all duration-200 ${isActive
+                                            ? "bg-primary/20 text-white font-medium border-l-2 border-primary"
+                                            : "text-muted-foreground hover:text-white hover:bg-primary/10"
+                                            }`}
                                           onClick={() => setSidebarOpen(false)}
                                         >
                                           {item.title}

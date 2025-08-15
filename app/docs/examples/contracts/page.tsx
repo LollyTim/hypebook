@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Smart Contract Examples - HyperBook",
+  title: "Smart Contract Examples - HypeBook",
   description: "Practical smart contract examples and tutorials",
 }
 

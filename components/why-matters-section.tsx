@@ -39,7 +39,7 @@ export function WhyMattersSection() {
         >
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-gradient">Why This Matters</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            The Hyperliquid ecosystem is revolutionizing DeFi. HyperBook ensures you have the knowledge to build the
+            The Hyperliquid ecosystem is revolutionizing DeFi. HypeBook ensures you have the knowledge to build the
             next generation of financial applications.
           </p>
         </motion.div>

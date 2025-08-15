@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Custom Precompiles - HyperBook",
+  title: "Custom Precompiles - HypeBook",
   description: "How to create and deploy custom precompiled functions on HyperEVM",
 }
 

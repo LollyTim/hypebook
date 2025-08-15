@@ -33,7 +33,7 @@ export function OpenSourceSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              HyperBook is completely open source. Contribute guides, fix bugs, or suggest improvements. Together, we're
+              HypeBook is completely open source. Contribute guides, fix bugs, or suggest improvements. Together, we're
               building the definitive resource for Hyperliquid developers.
             </motion.p>
           </div>

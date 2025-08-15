@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "NFT Collection Examples - HyperBook",
+  title: "NFT Collection Examples - HypeBook",
   description: "Creating and managing NFT collections on HyperEVM",
 }
 

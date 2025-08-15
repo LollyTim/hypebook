@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Rate Limits - HyperBook",
+  title: "Rate Limits - HypeBook",
   description: "Understanding RPC rate limits and optimization strategies",
 }
 

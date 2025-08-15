@@ -102,13 +102,12 @@ function ToolCard({ tool, index }: { tool: (typeof nativeTools)[0]; index: numbe
         {/* Status badge */}
         <div className="absolute top-4 right-4">
           <span
-            className={`text-xs font-medium px-3 py-1 rounded-full ${
-              tool.status === "Live"
+            className={`text-xs font-medium px-3 py-1 rounded-full ${tool.status === "Live"
                 ? "bg-green-500/20 text-green-400 border border-green-500/30"
                 : tool.status === "Beta"
                   ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
                   : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
-            }`}
+              }`}
           >
             {tool.status}
           </span>
@@ -180,10 +179,10 @@ export default function EcosystemPage() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white via-emerald-300 to-teal-200 bg-clip-text text-transparent">
-                HyperBook Ecosystem
+                HypeBook Ecosystem
               </h1>
               <p className="text-xl lg:text-2xl text-gray-200 leading-relaxed max-w-3xl mx-auto">
-                Discover the powerful native tools and resources built specifically for the HyperBook documentation
+                Discover the powerful native tools and resources built specifically for the HypeBook documentation
                 ecosystem and HyperEVM development
               </p>
             </motion.div>
@@ -216,7 +215,7 @@ export default function EcosystemPage() {
               </h2>
               <p className="text-xl text-gray-300 leading-relaxed">
                 We're continuously expanding the ecosystem with new tools, integrations, and developer resources to
-                empower the HyperBook community.
+                empower the HypeBook community.
               </p>
               <motion.div
                 className="inline-flex items-center gap-2 text-emerald-400 font-medium bg-emerald-400/10 px-6 py-3 rounded-full border border-emerald-400/20"

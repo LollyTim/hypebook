@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "CoreWriter Examples - HyperBook",
+  title: "CoreWriter Examples - HypeBook",
   description: "Practical examples and tutorials for CoreWriter development",
 }
 

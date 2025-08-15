@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "WebSocket Connections - HyperBook",
+  title: "WebSocket Connections - HypeBook",
   description: "Real-time data streaming with WebSocket connections",
 }
 

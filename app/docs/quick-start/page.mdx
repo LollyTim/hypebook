@@ -1,0 +1,202 @@
+---
+title: "Quick Start - HypeBook"
+description: "Get started with HyperEVM development in minutes"
+---
+
+# Welcome to HypeBook
+
+Your AI-powered, open-source guide to building on Hyperliquid's HyperEVM.
+
+Follow these steps to start building in minutes:
+
+## What is Hyperliquid?
+
+Hyperliquid is a high-performance blockchain platform that combines the best of both worlds:
+
+- **HyperCore**: Lightning-fast spot and perpetual markets
+- **HyperEVM**: Full Ethereum compatibility for smart contracts
+
+This unique dual-layer architecture gives you the speed of centralized exchanges with the security and programmability of decentralized platforms.
+
+### Key Features:
+
+- **HYPE Token**: Native gas token on HyperEVM with 18 decimals
+- **EIP-1559 Support**: Base fees are burned, priority fees are also burned (unlike most EVM chains)
+- **Cancun Hardfork**: Uses Cancun without blobs
+- **HyperBFT Consensus**: Inherits security from HyperBFT consensus
+- **No WebSocket Support**: Currently no websocket JSON-RPC support on main RPC endpoint
+
+## Why Build on HyperEVM?
+
+### 🚀 **Speed & Performance**
+
+- Dual-block architecture: Small blocks for fast transactions, large blocks for complex operations
+- Sub-second finality for most transactions
+- High throughput without compromising decentralization
+
+### 🔧 **Developer-Friendly**
+
+- Full EVM compatibility - use all your existing Ethereum tools
+- Direct integration with HyperCore's order books and markets
+- No need to learn new languages or frameworks
+
+### 💰 **Cost-Effective**
+
+- Lower gas fees compared to Ethereum mainnet
+- HYPE token for gas payments
+- Efficient resource utilization
+
+### 🌉 **Seamless Integration**
+
+- Built-in bridges to other chains
+- Native USDC support
+- Easy asset transfers between HyperCore and HyperEVM
+
+## Quick Start Guide
+
+### Step 1: Set Up Your Wallet
+
+Install a Web3 wallet (like MetaMask) and add the HyperEVM network:
+
+**Network Details:**
+
+- **Network Name**: HyperEVM
+- **RPC URL**: `https://rpc.hyperliquid.xyz/evm`
+- **Chain ID**: 999
+- **Currency Symbol**: HYPE
+- **Block Explorer**: `https://explorer.hyperliquid.xyz`
+
+[View Wallet Setup Guide →](/docs/installation)
+
+### Step 2: Get Testnet Funds
+
+Use the official Hyperliquid faucet to request testnet tokens:
+
+**Testnet Details:**
+
+- **RPC URL**: `https://rpc.hyperliquid-testnet.xyz/evm`
+- **Chain ID**: 998
+- **Faucet**: [Hyperliquid Testnet Faucet](https://faucet.hyperliquid.xyz)
+
+[Get Testnet Tokens →](/docs/testnet/faucet)
+
+### Step 3: Install Dependencies
+
+```bash
+npm install --save ethers
+# or
+yarn add ethers
+```
+
+For development frameworks:
+
+```bash
+# Using Hardhat
+npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
+
+# Using Foundry
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Step 4: Deploy Your First Contract
+
+Create a simple smart contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract HelloHyperEVM {
+    string public message = "Hello from HyperEVM!";
+
+    function setMessage(string memory newMessage) public {
+        message = newMessage;
+    }
+
+    function getMessage() public view returns (string memory) {
+        return message;
+    }
+}
+```
+
+Deploy using your preferred framework:
+
+**Hardhat:**
+
+```bash
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network hyperevm
+```
+
+**Foundry:**
+
+```bash
+forge build
+forge create HelloHyperEVM --rpc-url https://rpc.hyperliquid.xyz/evm
+```
+
+[Deploy Your First Contract →](/docs/examples/contracts)
+
+### Step 5: Transfer HYPE to HyperEVM
+
+To move HYPE from HyperCore to HyperEVM, send HYPE to the bridge address:
+
+```solidity
+// Bridge address for HyperCore to HyperEVM transfers
+address constant BRIDGE_ADDRESS = 0x2222222222222222222222222222222222222222;
+```
+
+### Step 6: Interact with HyperCore
+
+Use precompiled contracts to interact with HyperCore markets:
+
+```solidity
+// Read from HyperCore order books
+interface IHyperCore {
+    function getOrderBook(uint32 marketId) external view returns (bytes memory);
+    function getBalance(address user, uint32 marketId) external view returns (uint256);
+}
+```
+
+[Learn More About HyperCore Integration →](/docs/hyperevm/architecture)
+
+## What's Next?
+
+### 🛠️ **Development Tools**
+
+- **Block Explorer**: [explorer.hyperliquid.xyz](https://explorer.hyperliquid.xyz)
+- **RPC Providers**: Official endpoints for mainnet and testnet
+- **SDKs**: JavaScript and Python SDKs available
+- **Documentation**: Comprehensive guides and API references
+
+### 📚 **Learning Resources**
+
+- [HyperEVM Architecture](/docs/hyperevm/architecture)
+- [Smart Contract Examples](/docs/examples/contracts)
+- [DeFi Protocol Guides](/docs/examples/defi)
+- [RPC Integration](/docs/rpc)
+
+### 🤝 **Community Support**
+
+- **Discord**: Join the Hyperliquid developer community
+- **GitHub**: Open-source tools and examples
+- **Documentation**: Always up-to-date guides
+
+## Need Help?
+
+### Ask the AI
+
+Stuck? Ask HypeBook AI for instant answers about HyperEVM development.
+
+[Chat with HypeBook AI →](/docs/ai-assistant)
+
+### Community Resources
+
+- [Official Hyperliquid Documentation](https://hyperliquid.gitbook.io)
+- [Developer Discord](https://discord.gg/hyperliquid)
+- [GitHub Repository](https://github.com/hyperliquid)
+
+---
+
+**Ready to build the future of DeFi?** Start with HyperEVM and experience the perfect blend of speed, security, and developer experience.

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "RPC Providers - HyperBook",
+  title: "RPC Providers - HypeBook",
   description: "Guide to HyperEVM RPC endpoints and providers",
 }
 

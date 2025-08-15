@@ -24,7 +24,7 @@ export function AboutSection() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                About HyperBook
+                About HypeBook
               </motion.h2>
               <motion.div
                 className="w-24 h-1 bg-gradient-to-r from-primary to-accent rounded-full"
@@ -42,7 +42,7 @@ export function AboutSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              HyperBook is the definitive open-source documentation platform for the Hyperliquid ecosystem. Built by
+              HypeBook is the definitive open-source documentation platform for the Hyperliquid ecosystem. Built by
               developers, for developers, it provides comprehensive guides, tutorials, and reference materials for
               building on HyperEVM.
             </motion.p>
@@ -54,7 +54,7 @@ export function AboutSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              From smart contract development to DeFi protocol integration, HyperBook covers everything you need to know
+              From smart contract development to DeFi protocol integration, HypeBook covers everything you need to know
               to build successful applications on the fastest growing blockchain ecosystem.
             </motion.p>
 
@@ -95,14 +95,14 @@ export function AboutSection() {
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-muted/30 rounded px-3 py-1 text-xs text-muted-foreground">
-                      hyperbook.dev/docs
+                      hypebook.dev/docs
                     </div>
                   </div>
                 </div>
                 <div className="p-6 bg-gradient-to-br from-background/50 to-muted/20">
                   <Image
                     src="/documentation-interface.png"
-                    alt="HyperBook Documentation Interface"
+                    alt="HypeBook Documentation Interface"
                     width={400}
                     height={300}
                     className="w-full h-auto rounded-lg"

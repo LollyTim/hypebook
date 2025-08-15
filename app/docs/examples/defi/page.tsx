@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "DeFi Protocol Examples - HyperBook",
+  title: "DeFi Protocol Examples - HypeBook",
   description: "Building decentralized finance protocols on HyperEVM",
 }
 

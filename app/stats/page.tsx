@@ -28,10 +28,10 @@ export default function StatsPage() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white via-emerald-200 to-cyan-200 bg-clip-text text-transparent">
-                HyperBook Statistics
+                HypeBook Statistics
               </h1>
               <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed">
-                Real-time insights into HyperBook's documentation usage and ecosystem growth
+                Real-time insights into HypeBook's documentation usage and ecosystem growth
               </p>
             </motion.div>
 
@@ -50,13 +50,12 @@ export default function StatsPage() {
                     <div className="flex items-center justify-between mb-4">
                       <Icon className="w-8 h-8 text-emerald-400" />
                       <span
-                        className={`text-sm font-medium px-2 py-1 rounded ${
-                          stat.change.startsWith("+")
+                        className={`text-sm font-medium px-2 py-1 rounded ${stat.change.startsWith("+")
                             ? "text-green-400 bg-green-400/10"
                             : stat.change === "0%"
                               ? "text-gray-400 bg-gray-400/10"
                               : "text-red-400 bg-red-400/10"
-                        }`}
+                          }`}
                       >
                         {stat.change}
                       </span>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "JavaScript SDK - HyperBook",
+  title: "JavaScript SDK - HypeBook",
   description: "Complete guide to the HyperEVM JavaScript SDK",
 }
 

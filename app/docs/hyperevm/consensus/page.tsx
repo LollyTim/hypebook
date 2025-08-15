@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Consensus Mechanism - HyperBook",
+  title: "Consensus Mechanism - HypeBook",
   description: "Learn about HyperEVM consensus mechanism and validator operations",
 }
 

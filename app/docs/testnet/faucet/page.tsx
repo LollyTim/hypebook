@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Testnet Faucet - HyperBook",
+  title: "Testnet Faucet - HypeBook",
   description: "How to get testnet tokens for development and testing",
 }
 

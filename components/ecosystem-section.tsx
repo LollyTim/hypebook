@@ -25,7 +25,7 @@ export function EcosystemSection() {
         >
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-gradient">Ecosystem Integrations</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            HyperBook covers integrations with all major tools and protocols in the Web3 ecosystem.
+            HypeBook covers integrations with all major tools and protocols in the Web3 ecosystem.
           </p>
         </motion.div>
 

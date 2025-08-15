@@ -40,24 +40,24 @@ export default function DocsHomePage() {
   ]
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       {/* Hero Section */}
       <motion.div
-        className="text-center space-y-6"
+        className="text-center space-y-4 sm:space-y-6"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="space-y-4">
-          <Badge variant="secondary" className="px-4 py-2 text-sm font-medium">
+        <div className="space-y-3 sm:space-y-4">
+          <Badge variant="secondary" className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium">
             Documentation
           </Badge>
-          <h1 className="text-4xl lg:text-6xl font-serif font-bold leading-tight">
-            <span className="text-gradient">HyperBook</span>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold leading-tight px-4">
+            <span className="text-gradient">HypeBook</span>
             <br />
             <span className="text-foreground">Documentation</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-sans">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-sans px-4">
             Everything you need to build on HyperEVM. From basic concepts to advanced implementations.
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function DocsHomePage() {
 
       {/* Quick Start Grid */}
       <motion.div
-        className="grid md:grid-cols-2 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 px-4"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -104,19 +104,19 @@ export default function DocsHomePage() {
 
       {/* Featured Content */}
       <motion.div
-        className="space-y-8"
+        className="space-y-6 sm:space-y-8"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <div className="text-center">
-          <h2 className="text-3xl font-serif font-bold mb-4">
+        <div className="text-center px-4">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold mb-3 sm:mb-4">
             <span className="text-gradient">Popular Guides</span>
           </h2>
-          <p className="text-muted-foreground font-sans">Most accessed documentation and tutorials</p>
+          <p className="text-sm sm:text-base text-muted-foreground font-sans">Most accessed documentation and tutorials</p>
         </div>
 
-        <div className="grid gap-4">
+        <div className="grid gap-4 px-4">
           {[
             { title: "Setting up your first smart contract", category: "Getting Started", readTime: "5 min" },
             { title: "Understanding HyperEVM gas mechanics", category: "Core Concepts", readTime: "8 min" },
@@ -125,20 +125,20 @@ export default function DocsHomePage() {
           ].map((guide, index) => (
             <motion.div key={guide.title} whileHover={{ x: 8 }} transition={{ duration: 0.2 }}>
               <Card className="glass border-primary/10 hover:border-primary/30 transition-all duration-300 cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                     <div className="space-y-2">
-                      <h3 className="font-serif font-semibold text-lg hover:text-primary transition-colors">
+                      <h3 className="font-serif font-semibold text-base sm:text-lg hover:text-primary transition-colors">
                         {guide.title}
                       </h3>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground font-sans">
-                        <Badge variant="outline" className="text-xs">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground font-sans">
+                        <Badge variant="outline" className="text-xs w-fit">
                           {guide.category}
                         </Badge>
                         <span>{guide.readTime} read</span>
                       </div>
                     </div>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground self-start sm:self-center" />
                   </div>
                 </CardContent>
               </Card>
