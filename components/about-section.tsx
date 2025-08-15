@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import docInterface from "@/app/assets/image/image.png"
 
 export function AboutSection() {
   return (
@@ -95,13 +96,13 @@ export function AboutSection() {
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-muted/30 rounded px-3 py-1 text-xs text-muted-foreground">
-                      hypebook.dev/docs
+                      https://hypebook.xyz/docs
                     </div>
                   </div>
                 </div>
                 <div className="p-6 bg-gradient-to-br from-background/50 to-muted/20">
                   <Image
-                    src="/documentation-interface.png"
+                    src={docInterface}
                     alt="HypeBook Documentation Interface"
                     width={400}
                     height={300}
