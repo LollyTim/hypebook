@@ -33,6 +33,7 @@ export function Navigation() {
     { label: "About", href: "#about", onClick: () => scrollToSection("about") },
     { label: "Docs", href: "/docs" },
     { label: "Ecosystem", href: "/ecosystem" },
+    { label: "Ecosystem Docs", href: "/ecosystem-docs" },
   ]
 
   return (

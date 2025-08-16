@@ -64,7 +64,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-serif font-bold leading-tight px-4"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-serif font-bold leading-tight px-4"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -122,7 +122,7 @@ export function HeroSection() {
                   size="lg"
                   className="w-full sm:w-auto glass glass-hover border-primary/30 text-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold group bg-transparent font-sans"
                 >
-                  <Link href="https://github.com/hypebook-docs" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://github.com/lollytim/hypebook" target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform" />
                     View on GitHub
                   </Link>

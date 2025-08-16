@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Outfit, Inter } from "next/font/google"
 import "./globals.css"
 import { SidebarProvider } from "@/components/docs-sidebar"
+import { Analytics } from "@vercel/analytics/next"
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -148,6 +149,7 @@ export default function RootLayout({
     <html lang="en" className={`${outfit.variable} ${inter.variable} antialiased`}>
       <body className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950 to-teal-950">
         <SidebarProvider>{children}</SidebarProvider>
+        <Analytics />
       </body>
     </html>
   )
