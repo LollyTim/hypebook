@@ -4,6 +4,8 @@ import { Outfit, Inter } from "next/font/google"
 import "./globals.css"
 import { SidebarProvider } from "@/components/docs-sidebar"
 import { Analytics } from "@vercel/analytics/next"
+import { ThemeProvider } from "@/components/theme-provider";
+import { Providers } from "./providers";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -61,7 +63,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://hypebook.dev"),
+  metadataBase: new URL("https://hypebook.xyz"),
   alternates: {
     canonical: "/",
   },
@@ -73,7 +75,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "HypeBook - The Open Guide for HyperEVM Builders",
     description: "Comprehensive open-source documentation, tutorials, and guides for building DeFi applications on Hyperliquid's HyperEVM. Learn smart contract development, cross-chain integration, and advanced DeFi protocols with real-world examples.",
-    url: "https://hypebook.dev",
+    url: "https://hypebook.xyz",
     siteName: "HypeBook",
     images: [
       {
@@ -86,8 +88,6 @@ export const metadata: Metadata = {
     ],
     locale: "en_US",
     type: "website",
-    publishedTime: "2024-01-01T00:00:00.000Z",
-    modifiedTime: new Date().toISOString(),
   },
   twitter: {
     card: "summary_large_image",
@@ -148,8 +148,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} antialiased`}>
       <body className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950 to-teal-950">
-        <SidebarProvider>{children}</SidebarProvider>
-        <Analytics />
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider>{children}</SidebarProvider>
+            <Analytics />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )

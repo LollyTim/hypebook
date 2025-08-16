@@ -1,16 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, BookOpen, Globe, Users, Zap, Shield, GitBranch, Search, FileText, Code, Database, Rocket, Mail, User, Plus, Settings, Upload, Eye, CheckCircle, Clock } from "lucide-react";
+import { ArrowRight, BookOpen, Globe, Users, Zap, Shield, GitBranch, Search, FileText, Code, Database, Rocket, Mail, Plus, Settings, Upload, CheckCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 
 export default function EcosystemDocsPage() {
+    const [email, setEmail] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const addToWaitlist = useMutation(api.waitlist.addToWaitlist);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!email.trim()) {
+            setErrorMessage("Please enter a valid email address");
+            setSubmitStatus("error");
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitStatus("idle");
+        setErrorMessage("");
+
+        try {
+            await addToWaitlist({ email: email.trim() });
+            setSubmitStatus("success");
+            setEmail("");
+        } catch (error) {
+            setSubmitStatus("error");
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            } else {
+                setErrorMessage("Failed to join waitlist. Please try again.");
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background">
             {/* Navigation */}
@@ -352,26 +391,49 @@ export default function EcosystemDocsPage() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                    <div className="space-y-4">
-                                        <Label htmlFor="waitlist-email" className="text-base font-semibold">
-                                            <Mail className="w-4 h-4 mr-2 inline" />
-                                            Email Address
-                                        </Label>
-                                        <Input
-                                            id="waitlist-email"
-                                            type="email"
-                                            placeholder="your.email@example.com"
-                                            className="glass border-primary/20"
-                                        />
-                                    </div>
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        <div className="space-y-4">
+                                            <Label htmlFor="waitlist-email" className="text-base font-semibold">
+                                                <Mail className="w-4 h-4 mr-2 inline" />
+                                                Email Address
+                                            </Label>
+                                            <Input
+                                                id="waitlist-email"
+                                                type="email"
+                                                placeholder="your.email@example.com"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="glass border-primary/20"
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
 
-                                    <Button
-                                        size="lg"
-                                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg"
-                                    >
-                                        Join Waitlist
-                                        <ArrowRight className="ml-2 h-5 w-5" />
-                                    </Button>
+                                        {submitStatus === "success" && (
+                                            <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                                                <p className="text-green-500 text-sm">
+                                                    ✅ Successfully joined the waitlist! We'll notify you when we launch.
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {submitStatus === "error" && (
+                                            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                                <p className="text-red-500 text-sm">
+                                                    ❌ {errorMessage}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <Button
+                                            type="submit"
+                                            size="lg"
+                                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Joining..." : "Join Waitlist"}
+                                            {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5" />}
+                                        </Button>
+                                    </form>
 
                                     <p className="text-center text-sm text-muted-foreground">
                                         We'll notify you as soon as we launch. No spam, just updates.
