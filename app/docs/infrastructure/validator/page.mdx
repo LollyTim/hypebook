@@ -1,0 +1,654 @@
+# HyperEVM Validator Guide
+
+Comprehensive guide to becoming a validator on the HyperEVM network. Learn how to set up, configure, and maintain a validator node to participate in consensus and earn rewards.
+
+## Overview
+
+HyperEVM validators play a crucial role in securing the network by:
+
+- Validating transactions and blocks
+- Participating in consensus mechanisms
+- Maintaining network integrity and decentralization
+- Earning rewards for their participation
+
+## Prerequisites
+
+Before becoming a validator, ensure you have:
+
+- Successfully set up a [HyperEVM node](/docs/infrastructure/node-setup)
+- Sufficient HYPE tokens for staking (minimum stake requirements apply)
+- Reliable infrastructure with high uptime guarantees
+- Understanding of validator responsibilities and risks
+
+## Validator Requirements
+
+### Technical Requirements
+
+**Hardware (Enhanced from Node Requirements):**
+
+- **CPU**: 16+ cores (3.2GHz+)
+- **RAM**: 64GB+ (128GB recommended for mainnet)
+- **Storage**: 2TB+ NVMe SSD with high IOPS
+- **Network**: Redundant 1 Gbps connections with <50ms latency
+- **Uptime**: 99.9%+ availability required
+
+**Software:**
+
+- Ubuntu 22.04 LTS (latest patches)
+- Docker and Docker Compose
+- Monitoring and alerting systems
+- Backup and disaster recovery solutions
+
+### Economic Requirements
+
+- **Minimum Stake**: 100,000 HYPE (subject to governance changes)
+- **Self-Stake**: At least 10% of total stake must be self-staked
+- **Slashing Risk**: Validators can lose staked tokens for misbehavior
+- **Commission**: Set your commission rate (typically 5-20%)
+
+## Validator Setup Process
+
+### 1. Prepare Your Node
+
+Ensure your HyperEVM node is fully synced and running stable:
+
+```bash
+# Check sync status
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' \
+  http://localhost:8545
+
+# Verify peer connections
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' \
+  http://localhost:8545
+```
+
+### 2. Generate Validator Keys
+
+Create validator signing keys:
+
+```bash
+# Create validator keys directory
+mkdir -p ~/validator-keys
+cd ~/validator-keys
+
+# Generate validator private key (keep this EXTREMELY secure)
+openssl rand -hex 32 > validator_private_key.txt
+
+# Generate public key and address
+hyperevm-cli validator generate-keys \
+  --private-key-file validator_private_key.txt \
+  --output-dir ./keys
+
+# Backup keys securely (multiple locations)
+tar -czf validator-keys-backup.tar.gz keys/
+```
+
+**⚠️ CRITICAL SECURITY WARNING:**
+
+- Store validator keys in multiple secure locations
+- Never share your private key
+- Consider using hardware security modules (HSM) for production
+- Implement proper key rotation procedures
+
+### 3. Update Node Configuration
+
+Modify your `docker-compose.yml` to enable validator mode:
+
+```yaml
+version: "3.8"
+
+services:
+  hyperevm-validator:
+    image: hyperliquid/hyperevm:latest
+    container_name: hyperevm-validator
+    restart: unless-stopped
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "30303:30303"
+      - "30303:30303/udp"
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./validator-keys:/validator-keys:ro
+      - ./logs:/logs
+    environment:
+      - NETWORK=mainnet
+      - VALIDATOR_MODE=true
+      - VALIDATOR_KEY_PATH=/validator-keys/keys
+    command:
+      [
+        "--datadir=/data",
+        "--config=/config/validator.toml",
+        "--validator",
+        "--validator.keyfile=/validator-keys/keys/validator_key.json",
+        "--validator.password-file=/validator-keys/keys/password.txt",
+        "--mine",
+        "--miner.coinbase=$(cat /validator-keys/keys/validator_address.txt)",
+        "--http",
+        "--http.addr=0.0.0.0",
+        "--http.port=8545",
+        "--ws",
+        "--ws.addr=0.0.0.0",
+        "--ws.port=8546",
+        "--p2p.port=30303",
+        "--verbosity=3",
+      ]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+```
+
+### 4. Configure Validator Settings
+
+Create `config/validator.toml`:
+
+```toml
+[validator]
+enabled = true
+keyfile = "/validator-keys/keys/validator_key.json"
+password_file = "/validator-keys/keys/password.txt"
+coinbase = "" # Will be loaded from validator_address.txt
+
+[consensus]
+engine = "hyperbft"
+block_time = "2s"
+epoch_length = 100
+
+[staking]
+min_self_stake = "100000000000000000000000"  # 100,000 HYPE
+commission_rate = "10"  # 10% commission
+max_commission_change = "1"  # Max 1% change per day
+
+[slashing]
+downtime_threshold = "0.05"  # 5% downtime tolerance
+double_sign_penalty = "0.05"  # 5% penalty for double signing
+offline_penalty = "0.01"  # 1% penalty for being offline
+
+[network]
+chain_id = 999
+network_id = 999
+
+[p2p]
+port = 30303
+max_peers = 100
+discovery = true
+validator_gossip = true
+
+[rpc]
+http_enabled = true
+http_host = "127.0.0.1"  # Restrict access for security
+http_port = 8545
+ws_enabled = true
+ws_host = "127.0.0.1"
+ws_port = 8546
+
+[security]
+enable_metrics = true
+metrics_port = 9090
+cors_origins = []
+vhosts = ["localhost"]
+```
+
+## Staking Process
+
+### 1. Prepare Staking Transaction
+
+Create a staking transaction to register as a validator:
+
+```javascript
+const Web3 = require("web3");
+const web3 = new Web3("http://localhost:8545");
+
+// Validator staking contract address
+const STAKING_CONTRACT = "0x0000000000000000000000000000000000000800";
+
+// Your validator details
+const validatorAddress = "0x..."; // Your validator address
+const stakeAmount = web3.utils.toWei("100000", "ether"); // 100,000 HYPE
+const commissionRate = 1000; // 10% (in basis points)
+
+// Staking contract ABI (simplified)
+const stakingABI = [
+  {
+    name: "createValidator",
+    type: "function",
+    inputs: [
+      { name: "validatorAddress", type: "address" },
+      { name: "commissionRate", type: "uint256" },
+      { name: "description", type: "string" },
+    ],
+  },
+];
+
+const contract = new web3.eth.Contract(stakingABI, STAKING_CONTRACT);
+
+// Create validator
+const tx = await contract.methods
+  .createValidator(validatorAddress, commissionRate, "My Validator Description")
+  .send({
+    from: validatorAddress,
+    value: stakeAmount,
+    gas: 200000,
+  });
+
+console.log("Validator created:", tx.transactionHash);
+```
+
+### 2. Submit Staking Transaction
+
+```bash
+# Using hyperevm-cli
+hyperevm-cli validator create \
+  --validator-address 0x... \
+  --stake-amount 100000 \
+  --commission-rate 10 \
+  --description "My Professional Validator" \
+  --keyfile /path/to/keyfile.json
+
+# Or using web3 directly
+node create-validator.js
+```
+
+### 3. Verify Registration
+
+```bash
+# Check validator status
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getInfo","params":["0x..."],"id":1}' \
+  http://localhost:8545
+
+# Check staking balance
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x...","latest"],"id":1}' \
+  http://localhost:8545
+```
+
+## Validator Operations
+
+### Starting Your Validator
+
+```bash
+cd ~/hyperevm-node
+docker-compose down
+docker-compose up -d
+
+# Monitor validator logs
+docker-compose logs -f hyperevm-validator
+```
+
+### Monitoring Validator Health
+
+Create a comprehensive monitoring script `monitor-validator.sh`:
+
+```bash
+#!/bin/bash
+
+VALIDATOR_ADDRESS="0x..."
+RPC_URL="http://localhost:8545"
+ALERT_EMAIL="admin@yourvalidator.com"
+
+# Check if validator is active
+IS_ACTIVE=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data "{\"jsonrpc\":\"2.0\",\"method\":\"validator_isActive\",\"params\":[\"$VALIDATOR_ADDRESS\"],\"id\":1}" \
+  $RPC_URL | jq -r '.result')
+
+if [ "$IS_ACTIVE" != "true" ]; then
+    echo "ALERT: Validator is not active!" | mail -s "Validator Alert" $ALERT_EMAIL
+fi
+
+# Check missed blocks
+MISSED_BLOCKS=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data "{\"jsonrpc\":\"2.0\",\"method\":\"validator_getMissedBlocks\",\"params\":[\"$VALIDATOR_ADDRESS\"],\"id\":1}" \
+  $RPC_URL | jq -r '.result')
+
+if [ "$MISSED_BLOCKS" -gt 10 ]; then
+    echo "ALERT: Validator missed $MISSED_BLOCKS blocks!" | mail -s "Validator Alert" $ALERT_EMAIL
+fi
+
+# Check balance
+BALANCE=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\":[\"$VALIDATOR_ADDRESS\",\"latest\"],\"id\":1}" \
+  $RPC_URL | jq -r '.result')
+
+BALANCE_ETH=$(echo "scale=2; ibase=16; $BALANCE / 10^18" | bc)
+echo "Current balance: $BALANCE_ETH HYPE"
+
+# Check rewards
+REWARDS=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data "{\"jsonrpc\":\"2.0\",\"method\":\"validator_getRewards\",\"params\":[\"$VALIDATOR_ADDRESS\"],\"id\":1}" \
+  $RPC_URL | jq -r '.result')
+
+echo "Pending rewards: $REWARDS HYPE"
+```
+
+### Performance Metrics
+
+Monitor these key metrics:
+
+```bash
+# Block production rate
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getBlocksProduced","params":["0x..."],"id":1}' \
+  http://localhost:8545
+
+# Uptime percentage
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getUptime","params":["0x..."],"id":1}' \
+  http://localhost:8545
+
+# Commission earned
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getCommissionEarned","params":["0x..."],"id":1}' \
+  http://localhost:8545
+```
+
+## Security Best Practices
+
+### 1. Key Management
+
+```bash
+# Use hardware security modules for production
+# Example with YubiHSM2
+yubihsm-shell --connector http://localhost:12345
+
+# Or use encrypted key storage
+gpg --symmetric --cipher-algo AES256 validator_private_key.txt
+```
+
+### 2. Network Security
+
+```bash
+# Restrict RPC access
+sudo ufw allow from 10.0.0.0/8 to any port 8545
+sudo ufw allow from 172.16.0.0/12 to any port 8545
+sudo ufw allow from 192.168.0.0/16 to any port 8545
+
+# Use VPN for remote access
+sudo apt install openvpn
+# Configure VPN access for management
+```
+
+### 3. Backup Strategy
+
+```bash
+# Create comprehensive backup script
+#!/bin/bash
+BACKUP_DIR="/secure-backup/validator"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Backup validator keys
+tar -czf $BACKUP_DIR/validator-keys-$DATE.tar.gz ~/validator-keys/
+
+# Backup configuration
+tar -czf $BACKUP_DIR/validator-config-$DATE.tar.gz ~/hyperevm-node/config/
+
+# Backup blockchain data (optional, large)
+# tar -czf $BACKUP_DIR/blockchain-$DATE.tar.gz ~/hyperevm-node/data/
+
+# Encrypt backups
+gpg --symmetric --cipher-algo AES256 $BACKUP_DIR/validator-keys-$DATE.tar.gz
+gpg --symmetric --cipher-algo AES256 $BACKUP_DIR/validator-config-$DATE.tar.gz
+
+# Upload to secure cloud storage
+aws s3 cp $BACKUP_DIR/ s3://your-secure-bucket/validator-backups/ --recursive
+```
+
+## Validator Economics
+
+### Revenue Streams
+
+1. **Block Rewards**: Base reward for producing blocks
+2. **Transaction Fees**: Share of fees from transactions in your blocks
+3. **Commission**: Percentage of rewards from delegated stake
+
+### Cost Considerations
+
+1. **Infrastructure**: Server costs, monitoring, backups
+2. **Slashing Risk**: Potential loss of staked tokens
+3. **Opportunity Cost**: HYPE tokens locked in staking
+
+### ROI Calculation
+
+```python
+# Example ROI calculation
+def calculate_validator_roi(
+    self_stake,
+    delegated_stake,
+    commission_rate,
+    annual_rewards_rate,
+    infrastructure_cost_annual
+):
+    total_stake = self_stake + delegated_stake
+    gross_rewards = total_stake * annual_rewards_rate
+    commission_earned = delegated_stake * annual_rewards_rate * (commission_rate / 100)
+    self_rewards = self_stake * annual_rewards_rate
+
+    total_revenue = commission_earned + self_rewards
+    net_profit = total_revenue - infrastructure_cost_annual
+
+    roi = (net_profit / self_stake) * 100
+
+    return {
+        'total_revenue': total_revenue,
+        'net_profit': net_profit,
+        'roi_percentage': roi
+    }
+
+# Example calculation
+result = calculate_validator_roi(
+    self_stake=100000,        # 100k HYPE
+    delegated_stake=400000,   # 400k HYPE delegated
+    commission_rate=10,       # 10% commission
+    annual_rewards_rate=0.08, # 8% annual rewards
+    infrastructure_cost_annual=12000  # $12k/year
+)
+
+print(f"Annual ROI: {result['roi_percentage']:.2f}%")
+```
+
+## Troubleshooting
+
+### Common Validator Issues
+
+**Validator not producing blocks:**
+
+```bash
+# Check if validator is in active set
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getActiveSet","params":[],"id":1}' \
+  http://localhost:8545 | jq '.result[] | select(.address == "0x...")'
+
+# Check signing key
+hyperevm-cli validator check-keys --keyfile /validator-keys/keys/validator_key.json
+
+# Verify stake amount
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getStake","params":["0x..."],"id":1}' \
+  http://localhost:8545
+```
+
+**High missed block rate:**
+
+```bash
+# Check system resources
+htop
+iostat -x 1
+iftop
+
+# Check network connectivity
+ping -c 10 bootnode1.hyperliquid.xyz
+traceroute bootnode1.hyperliquid.xyz
+
+# Review validator logs
+docker logs hyperevm-validator --tail 100
+```
+
+**Slashing events:**
+
+```bash
+# Check slashing history
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getSlashingHistory","params":["0x..."],"id":1}' \
+  http://localhost:8545
+
+# Review double signing protection
+grep "double.sign" ~/hyperevm-node/logs/validator.log
+```
+
+## Validator Governance
+
+### Participating in Governance
+
+As a validator, you can participate in network governance:
+
+```bash
+# Submit a governance proposal
+hyperevm-cli governance propose \
+  --title "Increase Block Size Limit" \
+  --description "Proposal to increase block size from 30M to 50M gas" \
+  --deposit 10000 \
+  --keyfile /validator-keys/keys/validator_key.json
+
+# Vote on proposals
+hyperevm-cli governance vote \
+  --proposal-id 1 \
+  --vote yes \
+  --keyfile /validator-keys/keys/validator_key.json
+```
+
+### Delegation Management
+
+Handle delegations to your validator:
+
+```bash
+# View current delegations
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"validator_getDelegations","params":["0x..."],"id":1}' \
+  http://localhost:8545
+
+# Set commission rate (with notice period)
+hyperevm-cli validator set-commission \
+  --new-rate 12 \
+  --effective-date "2024-02-01" \
+  --keyfile /validator-keys/keys/validator_key.json
+```
+
+## Upgrading Your Validator
+
+### Planned Upgrades
+
+```bash
+# Backup before upgrade
+./backup-validator.sh
+
+# Download new version
+docker pull hyperliquid/hyperevm:v2.0.0
+
+# Update docker-compose.yml with new image tag
+sed -i 's/hyperliquid\/hyperevm:latest/hyperliquid\/hyperevm:v2.0.0/' docker-compose.yml
+
+# Graceful restart
+docker-compose down
+docker-compose up -d
+
+# Monitor upgrade
+docker-compose logs -f hyperevm-validator
+```
+
+### Emergency Procedures
+
+```bash
+# Emergency validator shutdown
+docker-compose stop hyperevm-validator
+
+# Quick recovery from backup
+tar -xzf /backup/validator-keys-latest.tar.gz -C ~/
+docker-compose up -d
+
+# Check validator status after recovery
+./monitor-validator.sh
+```
+
+## Advanced Topics
+
+### High Availability Setup
+
+Set up validator failover:
+
+```yaml
+# docker-compose-ha.yml
+version: "3.8"
+
+services:
+  hyperevm-validator-primary:
+    image: hyperliquid/hyperevm:latest
+    # Primary validator config
+
+  hyperevm-validator-standby:
+    image: hyperliquid/hyperevm:latest
+    # Standby validator (keys disabled)
+    profiles: ["standby"]
+
+  keepalived:
+    image: keepalived:latest
+    # HA management
+```
+
+### Custom Monitoring Dashboard
+
+Create a Grafana dashboard for validator metrics:
+
+```json
+{
+  "dashboard": {
+    "title": "HyperEVM Validator Dashboard",
+    "panels": [
+      {
+        "title": "Blocks Produced",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "hyperevm_validator_blocks_produced"
+          }
+        ]
+      },
+      {
+        "title": "Missed Blocks",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "hyperevm_validator_missed_blocks"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Next Steps
+
+After successfully setting up your validator:
+
+1. **Join the validator community**: Connect with other validators for best practices
+2. **Set up comprehensive monitoring**: Implement alerting for all critical metrics
+3. **Plan for growth**: Attract delegations and grow your validator stake
+4. **Stay updated**: Follow network upgrades and governance proposals
+5. **Consider additional services**: Offer RPC endpoints or other infrastructure services
+
+For more advanced infrastructure topics, check out our [Monitoring Guide](/docs/infrastructure/monitoring) and [Performance Optimization](/docs/infrastructure/optimization).
+
+## Support and Resources
+
+- **Validator Chat**: Join the validator channel in [Hyperliquid Discord](https://discord.gg/hyperliquid)
+- **Documentation**: [Official Hyperliquid Docs](https://hyperliquid.gitbook.io/)
+- **GitHub**: [Report issues](https://github.com/hyperliquid-dex/hyperevm)
+- **Validator Tools**: [Community validator tools and scripts](https://github.com/hyperliquid-validators)
+
+Remember: Being a validator is a significant responsibility. Always prioritize security, maintain high uptime, and stay engaged with the community and governance processes.
+

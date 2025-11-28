@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, createContext, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Home, Book, Code, Settings, Zap, Globe, Wrench, FileText } from "lucide-react"
+import { ChevronRight, Home, Book, Code, Settings, Zap, Globe, Wrench, FileText, Server } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -23,6 +23,16 @@ const navigationItems = [
     icon: Book,
     items: [
       { title: "Architecture", href: "/docs/hyperevm/architecture" },
+    ],
+  },
+  {
+    title: "Infrastructure",
+    icon: Server,
+    items: [
+      { title: "Overview", href: "/docs/infrastructure" },
+      { title: "Node Setup", href: "/docs/infrastructure/node-setup" },
+      { title: "Validator Guide", href: "/docs/infrastructure/validator" },
+      { title: "Monitoring", href: "/docs/infrastructure/monitoring" },
     ],
   },
   {

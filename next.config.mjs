@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+  // Disable telemetry to prevent Windows permission issues
+  telemetry: false,
+};
 
-export default nextConfig
+export default nextConfig;

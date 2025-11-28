@@ -1,0 +1,553 @@
+# HyperEVM Node Setup Guide
+
+Complete step-by-step guide to setting up and running your own HyperEVM node. This guide covers everything from initial server setup to advanced configuration.
+
+## Overview
+
+Running a HyperEVM node allows you to:
+
+- Participate in the HyperEVM network
+- Access the network without relying on third-party RPC providers
+- Contribute to network decentralization and security
+- Earn rewards (for validators)
+
+## Hardware Requirements
+
+### Minimum Requirements
+
+- **CPU**: 4 cores (2.5GHz+)
+- **RAM**: 16GB
+- **Storage**: 500GB SSD
+- **Network**: 100 Mbps stable connection
+- **OS**: Ubuntu 20.04+ or equivalent Linux distribution
+
+### Recommended Requirements
+
+- **CPU**: 8+ cores (3.0GHz+)
+- **RAM**: 32GB+
+- **Storage**: 1TB+ NVMe SSD
+- **Network**: 1 Gbps stable connection with low latency
+- **OS**: Ubuntu 22.04 LTS
+
+### Production Requirements
+
+- **CPU**: 16+ cores (3.2GHz+)
+- **RAM**: 64GB+
+- **Storage**: 2TB+ NVMe SSD (RAID 1 recommended)
+- **Network**: Redundant 1 Gbps connections
+- **Power**: UPS backup recommended
+
+## Initial Server Setup
+
+### 1. Update System Packages
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl wget git build-essential
+```
+
+### 2. Create Dedicated User
+
+```bash
+sudo useradd -m -s /bin/bash hyperevm
+sudo usermod -aG sudo hyperevm
+sudo su - hyperevm
+```
+
+### 3. Configure Firewall
+
+```bash
+# Allow SSH
+sudo ufw allow ssh
+
+# Allow HyperEVM P2P port
+sudo ufw allow 30303
+
+# Allow RPC port (if exposing publicly - be cautious)
+sudo ufw allow 8545
+
+# Enable firewall
+sudo ufw enable
+```
+
+## Docker Installation
+
+### 1. Install Docker
+
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker hyperevm
+```
+
+### 2. Install Docker Compose
+
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### 3. Verify Installation
+
+```bash
+docker --version
+docker-compose --version
+```
+
+## HyperEVM Node Setup
+
+### 1. Create Directory Structure
+
+```bash
+mkdir -p ~/hyperevm-node/{data,config,logs}
+cd ~/hyperevm-node
+```
+
+### 2. Create Docker Compose Configuration
+
+Create `docker-compose.yml`:
+
+```yaml
+version: "3.8"
+
+services:
+  hyperevm-node:
+    image: hyperliquid/hyperevm:latest
+    container_name: hyperevm-node
+    restart: unless-stopped
+    ports:
+      - "8545:8545" # HTTP RPC
+      - "8546:8546" # WebSocket RPC
+      - "30303:30303" # P2P
+      - "30303:30303/udp"
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./logs:/logs
+    environment:
+      - NETWORK=mainnet
+      - DATA_DIR=/data
+      - CONFIG_DIR=/config
+      - LOG_LEVEL=info
+    command:
+      [
+        "--datadir=/data",
+        "--config=/config/node.toml",
+        "--http",
+        "--http.addr=0.0.0.0",
+        "--http.port=8545",
+        "--http.api=eth,net,web3,personal",
+        "--ws",
+        "--ws.addr=0.0.0.0",
+        "--ws.port=8546",
+        "--ws.api=eth,net,web3",
+        "--p2p.port=30303",
+        "--verbosity=3",
+      ]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+```
+
+### 3. Create Node Configuration
+
+Create `config/node.toml`:
+
+```toml
+[node]
+network = "mainnet"
+data_dir = "/data"
+log_level = "info"
+
+[p2p]
+port = 30303
+max_peers = 50
+discovery = true
+
+[rpc]
+http_enabled = true
+http_host = "0.0.0.0"
+http_port = 8545
+http_api = ["eth", "net", "web3", "personal"]
+
+ws_enabled = true
+ws_host = "0.0.0.0"
+ws_port = 8546
+ws_api = ["eth", "net", "web3"]
+
+[sync]
+mode = "full"
+gc_mode = "archive"
+
+[mining]
+enabled = false
+coinbase = ""
+
+[security]
+cors_origins = ["*"]
+vhosts = ["*"]
+```
+
+### 4. Set Permissions
+
+```bash
+sudo chown -R hyperevm:hyperevm ~/hyperevm-node
+chmod 755 ~/hyperevm-node/data
+chmod 644 ~/hyperevm-node/config/node.toml
+```
+
+## Starting the Node
+
+### 1. Start the Node
+
+```bash
+cd ~/hyperevm-node
+docker-compose up -d
+```
+
+### 2. Check Node Status
+
+```bash
+# View logs
+docker-compose logs -f hyperevm-node
+
+# Check if node is running
+docker-compose ps
+
+# Check sync status
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' \
+  http://localhost:8545
+```
+
+### 3. Monitor Initial Sync
+
+The initial sync can take several hours to days depending on your hardware and network. Monitor progress with:
+
+```bash
+# Check current block
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
+  http://localhost:8545
+
+# Check peer count
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' \
+  http://localhost:8545
+```
+
+## Network Configuration
+
+### Mainnet Configuration
+
+For mainnet, use these settings in your `config/node.toml`:
+
+```toml
+[node]
+network = "mainnet"
+chain_id = 999
+
+[p2p]
+bootnodes = [
+  "enode://[bootnode1]@bootnode1.hyperliquid.xyz:30303",
+  "enode://[bootnode2]@bootnode2.hyperliquid.xyz:30303"
+]
+```
+
+### Testnet Configuration
+
+For testnet, modify your configuration:
+
+```toml
+[node]
+network = "testnet"
+chain_id = 998
+
+[p2p]
+bootnodes = [
+  "enode://[testnet-bootnode1]@testnet1.hyperliquid.xyz:30303",
+  "enode://[testnet-bootnode2]@testnet2.hyperliquid.xyz:30303"
+]
+```
+
+## Security Best Practices
+
+### 1. Firewall Configuration
+
+```bash
+# Only allow necessary ports
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow 30303  # P2P port
+# Only expose RPC if necessary and secure it properly
+```
+
+### 2. SSL/TLS for RPC
+
+Create an Nginx reverse proxy for secure RPC access:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name your-node.domain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:8545;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+### 3. Authentication
+
+Implement API key authentication for RPC access:
+
+```bash
+# Generate API key
+openssl rand -hex 32
+
+# Use in your application
+curl -X POST -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
+  https://your-node.domain.com
+```
+
+## Maintenance and Monitoring
+
+### 1. System Monitoring
+
+Create a monitoring script `monitor.sh`:
+
+```bash
+#!/bin/bash
+
+# Check if node is running
+if ! docker-compose ps | grep -q "Up"; then
+    echo "Node is not running!"
+    # Restart node
+    docker-compose restart hyperevm-node
+fi
+
+# Check disk space
+DISK_USAGE=$(df /home/hyperevm/hyperevm-node/data | tail -1 | awk '{print $5}' | sed 's/%//')
+if [ $DISK_USAGE -gt 90 ]; then
+    echo "Disk usage is above 90%: ${DISK_USAGE}%"
+fi
+
+# Check sync status
+SYNC_STATUS=$(curl -s -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' \
+  http://localhost:8545 | jq -r '.result')
+
+if [ "$SYNC_STATUS" != "false" ]; then
+    echo "Node is still syncing"
+else
+    echo "Node is fully synced"
+fi
+```
+
+### 2. Log Rotation
+
+Configure log rotation in `/etc/logrotate.d/hyperevm`:
+
+```
+/home/hyperevm/hyperevm-node/logs/*.log {
+    daily
+    missingok
+    rotate 30
+    compress
+    notifempty
+    create 644 hyperevm hyperevm
+    postrotate
+        docker-compose -f /home/hyperevm/hyperevm-node/docker-compose.yml restart hyperevm-node
+    endscript
+}
+```
+
+### 3. Automated Backups
+
+Create backup script `backup.sh`:
+
+```bash
+#!/bin/bash
+
+BACKUP_DIR="/backup/hyperevm"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Create backup directory
+mkdir -p $BACKUP_DIR
+
+# Stop node temporarily
+docker-compose stop hyperevm-node
+
+# Create backup
+tar -czf $BACKUP_DIR/hyperevm_backup_$DATE.tar.gz \
+    ~/hyperevm-node/data \
+    ~/hyperevm-node/config
+
+# Restart node
+docker-compose start hyperevm-node
+
+# Keep only last 7 days of backups
+find $BACKUP_DIR -name "hyperevm_backup_*.tar.gz" -mtime +7 -delete
+
+echo "Backup completed: hyperevm_backup_$DATE.tar.gz"
+```
+
+## Performance Optimization
+
+### 1. System Tuning
+
+```bash
+# Increase file descriptor limits
+echo "hyperevm soft nofile 65536" >> /etc/security/limits.conf
+echo "hyperevm hard nofile 65536" >> /etc/security/limits.conf
+
+# Optimize network settings
+echo "net.core.rmem_max = 134217728" >> /etc/sysctl.conf
+echo "net.core.wmem_max = 134217728" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_rmem = 4096 87380 134217728" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_wmem = 4096 65536 134217728" >> /etc/sysctl.conf
+
+sysctl -p
+```
+
+### 2. Docker Resource Limits
+
+Update `docker-compose.yml` with resource limits:
+
+```yaml
+services:
+  hyperevm-node:
+    # ... other config
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+          cpus: "8"
+        reservations:
+          memory: 8G
+          cpus: "4"
+```
+
+### 3. Storage Optimization
+
+```bash
+# Use faster storage mount options
+mount -o noatime,nodiratime /dev/nvme0n1 /home/hyperevm/hyperevm-node/data
+
+# Add to /etc/fstab for persistence
+echo "/dev/nvme0n1 /home/hyperevm/hyperevm-node/data ext4 noatime,nodiratime 0 2" >> /etc/fstab
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Node won't start:**
+
+```bash
+# Check logs
+docker-compose logs hyperevm-node
+
+# Check permissions
+ls -la ~/hyperevm-node/
+
+# Verify configuration
+docker-compose config
+```
+
+**Sync is stuck:**
+
+```bash
+# Reset blockchain data
+docker-compose down
+rm -rf ~/hyperevm-node/data/blockchain
+docker-compose up -d
+```
+
+**High memory usage:**
+
+```bash
+# Monitor resource usage
+docker stats hyperevm-node
+
+# Adjust cache settings in node.toml
+[cache]
+database = 2048
+trie = 1024
+```
+
+**Network connectivity issues:**
+
+```bash
+# Check firewall
+sudo ufw status
+
+# Test P2P connectivity
+telnet bootnode1.hyperliquid.xyz 30303
+
+# Check DNS resolution
+nslookup bootnode1.hyperliquid.xyz
+```
+
+## Upgrading the Node
+
+### 1. Backup Before Upgrade
+
+```bash
+./backup.sh
+```
+
+### 2. Pull Latest Image
+
+```bash
+docker-compose pull hyperevm-node
+```
+
+### 3. Restart with New Version
+
+```bash
+docker-compose down
+docker-compose up -d
+```
+
+### 4. Verify Upgrade
+
+```bash
+# Check version
+curl -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":1}' \
+  http://localhost:8545
+
+# Monitor logs
+docker-compose logs -f hyperevm-node
+```
+
+## Next Steps
+
+Once your node is running successfully:
+
+1. **Set up monitoring**: Implement comprehensive monitoring with tools like Prometheus and Grafana
+2. **Configure alerting**: Set up alerts for node downtime, sync issues, and resource usage
+3. **Consider becoming a validator**: If you want to participate in consensus and earn rewards
+4. **Join the community**: Connect with other node operators for support and updates
+
+For advanced configurations and validator setup, continue to our [Validator Guide](/docs/infrastructure/validator).
+
+## Support
+
+If you encounter issues:
+
+- Check the [troubleshooting section](#troubleshooting) above
+- Review logs carefully for error messages
+- Join the [Hyperliquid Discord](https://discord.gg/hyperliquid) for community support
+- Submit issues to the [GitHub repository](https://github.com/hyperliquid-dex/hyperevm)

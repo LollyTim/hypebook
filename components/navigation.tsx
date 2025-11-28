@@ -5,8 +5,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 import logo from "@/app/assets/image/hypebookLogo.png"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -31,9 +37,16 @@ export function Navigation() {
 
   const navigationItems = [
     { label: "About", href: "#about", onClick: () => scrollToSection("about") },
-    { label: "Docs", href: "/docs" },
+    {
+      label: "Product",
+      type: "dropdown",
+      items: [
+        { label: "HypeBook Docs", href: "/ecosystem-docs", description: "Professional documentation hosting" },
+        { label: "HypeBook Article", href: "https://article.hyperliquid.xyz", external: true, description: "Publishing platform for articles & blogs" },
+      ]
+    },
     { label: "Ecosystem", href: "/ecosystem" },
-    { label: "Ecosystem Docs", href: "/ecosystem-docs" },
+    { label: "Open Source Docs", href: "/docs" },
   ]
 
   return (
@@ -62,16 +75,60 @@ export function Navigation() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8 lg:space-x-12">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={item.onClick}
-                className="text-white/80 hover:text-white transition-colors font-medium text-sm whitespace-nowrap"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navigationItems.map((item) => {
+              if (item.type === "dropdown") {
+                return (
+                  <DropdownMenu key={item.label}>
+                    <DropdownMenuTrigger asChild>
+                      <button className="text-white/80 hover:text-white transition-colors font-medium text-sm whitespace-nowrap flex items-center gap-1">
+                        {item.label}
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-72 bg-popover backdrop-blur-md border-border shadow-lg">
+                      {item.items?.map((subItem) => (
+                        <DropdownMenuItem key={subItem.label} asChild>
+                          {subItem.external ? (
+                            <a
+                              href={subItem.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex flex-col items-start w-full px-3 py-3 text-sm rounded-sm hover:bg-accent cursor-pointer"
+                            >
+                              <span className="font-medium text-popover-foreground">{subItem.label}</span>
+                              {subItem.description && (
+                                <span className="text-xs text-muted-foreground mt-1">{subItem.description}</span>
+                              )}
+                            </a>
+                          ) : (
+                            <Link
+                              href={subItem.href}
+                              className="flex flex-col items-start w-full px-3 py-3 text-sm rounded-sm hover:bg-accent cursor-pointer"
+                            >
+                              <span className="font-medium text-popover-foreground">{subItem.label}</span>
+                              {subItem.description && (
+                                <span className="text-xs text-muted-foreground mt-1">{subItem.description}</span>
+                              )}
+                            </Link>
+                          )}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              }
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href || "#"}
+                  onClick={item.onClick}
+                  className="text-white/80 hover:text-white transition-colors font-medium text-sm whitespace-nowrap"
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </div>
 
           {/* Desktop Launch App Button */}
@@ -109,16 +166,57 @@ export function Navigation() {
           >
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-lg">
               <div className="space-y-3">
-                {navigationItems.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={item.onClick}
-                    className="block text-white/80 hover:text-white transition-colors font-medium text-sm py-2 px-3 rounded-lg hover:bg-white/10"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {navigationItems.map((item) => {
+                  if (item.type === "dropdown") {
+                    return (
+                      <div key={item.label} className="space-y-2">
+                        <div className="text-white/60 font-medium text-sm py-2 px-3">
+                          {item.label}
+                        </div>
+                        {item.items?.map((subItem) => (
+                          <div key={subItem.label} className="ml-4">
+                            {subItem.external ? (
+                              <a
+                                href={subItem.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block text-white/80 hover:text-white transition-colors py-2 px-3 rounded-lg hover:bg-white/10"
+                              >
+                                <div className="font-medium text-sm">{subItem.label}</div>
+                                {subItem.description && (
+                                  <div className="text-xs text-white/60 mt-1">{subItem.description}</div>
+                                )}
+                              </a>
+                            ) : (
+                              <Link
+                                href={subItem.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block text-white/80 hover:text-white transition-colors py-2 px-3 rounded-lg hover:bg-white/10"
+                              >
+                                <div className="font-medium text-sm">{subItem.label}</div>
+                                {subItem.description && (
+                                  <div className="text-xs text-white/60 mt-1">{subItem.description}</div>
+                                )}
+                              </Link>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  }
+
+                  return (
+                    <Link
+                      key={item.label}
+                      href={item.href || "#"}
+                      onClick={item.onClick}
+                      className="block text-white/80 hover:text-white transition-colors font-medium text-sm py-2 px-3 rounded-lg hover:bg-white/10"
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
                 <div className="pt-2 border-t border-white/20">
                   <Button
                     asChild
