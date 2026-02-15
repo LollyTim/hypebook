@@ -11,13 +11,16 @@ import {
   Globe, 
   Code2, 
   Zap,
-  Box
+  Box,
+  Compass,
+  Rocket
 } from "lucide-react"
 
 const sidebarItems = [
   {
     title: "Introduction",
     items: [
+      { title: "What is Hyperliquid?", href: "/docs/introduction/what-is-hyperliquid", icon: Rocket },
       { title: "Quick Start", href: "/docs/quick-start", icon: Zap },
       { title: "Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
     ]
@@ -36,6 +39,13 @@ const sidebarItems = [
       { title: "CoreWriter API", href: "/docs/corewriter/api", icon: Code2 },
       { title: "Javascript SDK", href: "/docs/sdk/javascript", icon: Settings },
       { title: "Python SDK", href: "/docs/sdk/python", icon: Settings },
+    ]
+  },
+  {
+    title: "Ecosystem",
+    items: [
+      { title: "Tools & SDKs", href: "/docs/ecosystem/tools", icon: Settings },
+      { title: "Projects", href: "/docs/ecosystem", icon: Compass },
     ]
   },
   {
@@ -74,7 +84,7 @@ export function Sidebar({ className }: { className?: string }) {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all group",
                       isActive 
-                        ? "bg-primary/10 text-primary font-medium border border-primary/20" 
+                        ? "bg-primary/10 text-primary font-medium border border-primary/20 shadow-[0_0_15px_rgba(77,219,178,0.1)]" 
                         : "text-muted hover:text-white hover:bg-white/5"
                     )}
                   >
