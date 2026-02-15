@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { 
-  Book, 
   Terminal, 
   Cpu, 
   Settings, 
@@ -13,7 +12,9 @@ import {
   Zap,
   Box,
   Compass,
-  Rocket
+  Rocket,
+  ShieldAlert,
+  Gavel
 } from "lucide-react"
 
 const sidebarItems = [
@@ -23,12 +24,18 @@ const sidebarItems = [
       { title: "What is Hyperliquid?", href: "/docs/introduction/what-is-hyperliquid", icon: Rocket },
       { title: "Getting Started", href: "/docs/getting-started/overview", icon: Compass },
       { title: "Quick Start", href: "/docs/quick-start", icon: Zap },
-      { title: "Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
     ]
   },
   {
-    title: "Core Concepts",
+    title: "Governance",
     items: [
+      { title: "HIP-4 Proposal", href: "/docs/governance/hip-4", icon: Gavel },
+    ]
+  },
+  {
+    title: "Architecture",
+    items: [
+      { title: "Core Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
       { title: "HyperEVM VM", href: "/docs/hyperevm/vm", icon: Box },
       { title: "Consensus", href: "/docs/hyperevm/consensus", icon: Globe },
       { title: "Gas Mechanics", href: "/docs/precompiles/gas", icon: Terminal },
@@ -38,6 +45,7 @@ const sidebarItems = [
     title: "Builder Tools",
     items: [
       { title: "CoreWriter API", href: "/docs/corewriter/api", icon: Code2 },
+      { title: "Harmonix Framework", href: "/docs/hyperevm/harmonix", icon: Settings },
       { title: "Javascript SDK", href: "/docs/sdk/javascript", icon: Settings },
       { title: "Python SDK", href: "/docs/sdk/python", icon: Settings },
     ]
