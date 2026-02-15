@@ -1,9 +1,11 @@
 "use client"
 
+import * as React from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { 
+  Book, 
   Terminal, 
   Cpu, 
   Settings, 
@@ -13,9 +15,13 @@ import {
   Box,
   Compass,
   Rocket,
-  ShieldAlert,
   Gavel
 } from "lucide-react"
+
+// Add SidebarProvider since app/layout.tsx expects it
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  return <div className="flex min-h-screen">{children}</div>
+}
 
 const sidebarItems = [
   {
