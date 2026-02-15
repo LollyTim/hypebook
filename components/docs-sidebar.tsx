@@ -4,27 +4,38 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { 
-  Book, 
   Terminal, 
   Cpu, 
   Settings, 
   Globe, 
   Code2, 
   Zap,
-  Box
+  Box,
+  Compass,
+  Rocket,
+  ShieldAlert,
+  Gavel
 } from "lucide-react"
 
 const sidebarItems = [
   {
     title: "Introduction",
     items: [
+      { title: "What is Hyperliquid?", href: "/docs/introduction/what-is-hyperliquid", icon: Rocket },
+      { title: "Getting Started", href: "/docs/getting-started/overview", icon: Compass },
       { title: "Quick Start", href: "/docs/quick-start", icon: Zap },
-      { title: "Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
     ]
   },
   {
-    title: "Core Concepts",
+    title: "Governance",
     items: [
+      { title: "HIP-4 Proposal", href: "/docs/governance/hip-4", icon: Gavel },
+    ]
+  },
+  {
+    title: "Architecture",
+    items: [
+      { title: "Core Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
       { title: "HyperEVM VM", href: "/docs/hyperevm/vm", icon: Box },
       { title: "Consensus", href: "/docs/hyperevm/consensus", icon: Globe },
       { title: "Gas Mechanics", href: "/docs/precompiles/gas", icon: Terminal },
@@ -34,8 +45,16 @@ const sidebarItems = [
     title: "Builder Tools",
     items: [
       { title: "CoreWriter API", href: "/docs/corewriter/api", icon: Code2 },
+      { title: "Harmonix Framework", href: "/docs/hyperevm/harmonix", icon: Settings },
       { title: "Javascript SDK", href: "/docs/sdk/javascript", icon: Settings },
       { title: "Python SDK", href: "/docs/sdk/python", icon: Settings },
+    ]
+  },
+  {
+    title: "Ecosystem",
+    items: [
+      { title: "Projects", href: "/docs/ecosystem", icon: Compass },
+      { title: "Tools & SDKs", href: "/docs/ecosystem/tools", icon: Settings },
     ]
   },
   {
@@ -74,7 +93,7 @@ export function Sidebar({ className }: { className?: string }) {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all group",
                       isActive 
-                        ? "bg-primary/10 text-primary font-medium border border-primary/20" 
+                        ? "bg-primary/10 text-primary font-medium border border-primary/20 shadow-[0_0_15px_rgba(77,219,178,0.1)]" 
                         : "text-muted hover:text-white hover:bg-white/5"
                     )}
                   >
