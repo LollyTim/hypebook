@@ -21,6 +21,7 @@ const sidebarItems = [
     title: "Introduction",
     items: [
       { title: "What is Hyperliquid?", href: "/docs/introduction/what-is-hyperliquid", icon: Rocket },
+      { title: "Getting Started", href: "/docs/getting-started/overview", icon: Compass },
       { title: "Quick Start", href: "/docs/quick-start", icon: Zap },
       { title: "Architecture", href: "/docs/hyperevm/architecture", icon: Cpu },
     ]
@@ -44,8 +45,8 @@ const sidebarItems = [
   {
     title: "Ecosystem",
     items: [
-      { title: "Tools & SDKs", href: "/docs/ecosystem/tools", icon: Settings },
       { title: "Projects", href: "/docs/ecosystem", icon: Compass },
+      { title: "Tools & SDKs", href: "/docs/ecosystem/tools", icon: Settings },
     ]
   },
   {
