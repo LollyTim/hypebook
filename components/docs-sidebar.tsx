@@ -15,7 +15,8 @@ import {
   Box,
   Compass,
   Rocket,
-  Gavel
+  Gavel,
+  BookOpen
 } from "lucide-react"
 
 // Add SidebarProvider since app/layout.tsx expects it
@@ -48,25 +49,32 @@ const sidebarItems = [
     ]
   },
   {
-    title: "Builder Tools",
+    title: "Builder Guide",
     items: [
+      { title: "The Builder's Guide", href: "/docs/builder-guide", icon: BookOpen },
       { title: "CoreWriter API", href: "/docs/corewriter/api", icon: Code2 },
       { title: "Harmonix Framework", href: "/docs/hyperevm/harmonix", icon: Settings },
+      { title: "Smart Contracts", href: "/docs/examples/contracts", icon: Code2 },
+    ]
+  },
+  {
+    title: "SDKs & APIs",
+    items: [
       { title: "Javascript SDK", href: "/docs/sdk/javascript", icon: Settings },
       { title: "Python SDK", href: "/docs/sdk/python", icon: Settings },
+      { title: "RPC Endpoints", href: "/docs/rpc", icon: Globe },
     ]
   },
   {
     title: "Ecosystem",
     items: [
       { title: "Projects", href: "/docs/ecosystem", icon: Compass },
-      { title: "Tools & SDKs", href: "/docs/ecosystem/tools", icon: Settings },
+      { title: "Tools & Utilities", href: "/docs/ecosystem/tools", icon: Settings },
     ]
   },
   {
     title: "Network",
     items: [
-      { title: "RPC Endpoints", href: "/docs/rpc", icon: Globe },
       { title: "Node Setup", href: "/docs/infrastructure/node-setup", icon: Settings },
       { title: "Validators", href: "/docs/testnet/validators", icon: Settings },
     ]
