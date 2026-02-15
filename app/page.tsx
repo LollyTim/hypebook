@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <>
       <Navigation />
-      <main className="w-full min-h-screen flex flex-col items-center">
+      <main className="min-h-screen">
         <HeroSection />
         <AboutSection />
         <WhyMattersSection />
