@@ -147,7 +147,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} antialiased`}>
-      <body className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950 to-teal-950">
+      <body className="min-h-screen w-full bg-gradient-to-br from-slate-950 via-emerald-950 to-teal-950">
         <Providers>
           <ThemeProvider
             attribute="class"

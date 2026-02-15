@@ -21,7 +21,7 @@ import {
 
 // Add SidebarProvider since app/layout.tsx expects it
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return <div className="w-full">{children}</div>
 }
 
 const sidebarItems = [
