@@ -1,19 +1,14 @@
-import type React from "react"
-import { DocsSidebar } from "@/components/docs-sidebar"
+import { Sidebar } from "@/components/docs-sidebar"
 import { DocsHeader } from "@/components/docs-header"
 
-export default function DocsLayoutPage({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
-      <DocsHeader />
-      <div className="flex">
-        <DocsSidebar />
-        <main className="flex-1 lg:pl-80">
-          <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">{children}</div>
+    <div className="flex min-h-screen bg-[#0d0d10]">
+      <Sidebar className="hidden lg:block w-72 border-r border-[#333344] sticky top-0 h-screen" />
+      <div className="flex-1 flex flex-col">
+        <DocsHeader />
+        <main className="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full">
+          {children}
         </main>
       </div>
     </div>
