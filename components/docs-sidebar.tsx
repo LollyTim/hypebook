@@ -21,7 +21,7 @@ import {
 
 // Add SidebarProvider since app/layout.tsx expects it
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  return <div className="flex min-h-screen">{children}</div>
+  return <>{children}</>
 }
 
 const sidebarItems = [
