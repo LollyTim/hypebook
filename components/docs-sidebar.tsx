@@ -59,9 +59,9 @@ const sidebarItems = [
     ]
   },
   {
-    title: "Governance",
+    title: "Protocol Standards",
     items: [
-      { title: "HIP-4 Proposal", href: "/docs/governance/hip-4", icon: Gavel },
+      { title: "HIPs (HIP-1, 2, 3 & Checks)", href: "/docs/governance/hip-4", icon: Gavel },
     ]
   },
   {
@@ -100,6 +100,7 @@ const sidebarItems = [
   {
     title: "Network",
     items: [
+      { title: "Testnet Setup & Deploy", href: "/docs/testnet", icon: Terminal },
       { title: "Node Setup", href: "/docs/infrastructure/node-setup", icon: Settings },
       { title: "Validators", href: "/docs/testnet/validators", icon: Settings },
     ]
